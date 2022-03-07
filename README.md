@@ -1,6 +1,6 @@
 # phrase_counter
 
-** How to run:
+##  How to run:
 
 - from sources: 
 
@@ -21,7 +21,7 @@ $ cat path/to/file parse-conc-{{ arch }}
  
 
 
-** Docker
+## Docker
 
 - to build:
 
@@ -37,7 +37,7 @@ $ docker run  phrase_counter "/phrase_counter/samples/file1.txt /phrase_counter/
 
 
 
-* Performance
+## Performance
 
 2 algorithms were considered:
 - consequent:  \_parse.go - datasources processed consequently
@@ -46,13 +46,13 @@ $ docker run  phrase_counter "/phrase_counter/samples/file1.txt /phrase_counter/
 On small amounts of data both algorithms give similar performance, but with data amount growing (10 Moby Dicks :)), concurent option gives betetr performance.
 
 
-* TODO (what to improve)
+## TODO (what to improve)
 
 - more tests (spent too much time trying to find most effective algorithm)
 - make it more user friendly: "--help", arguments check etc
 
 
-* Known bugs.
+## Known bugs
 
 - Unicode support on Linux. Development was done on arm64 and code perfectly works with unicode. There are 3 formatting errors in processing unicode-test.txt file
 - NOT BUG: all words with punct. symbols inside  without surrounding space(s) are not splitted ie H.M.S, a:b, a-b, don't etc...
