@@ -1,6 +1,6 @@
 # phrase_counter
 
-* How to run:
+** How to run:
 
 - from sources: 
 
@@ -21,7 +21,7 @@ $ cat path/to/file parse-conc-{{ arch }}
  
 
 
-* Docker
+** Docker
 
 - to build:
 
