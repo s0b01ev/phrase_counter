@@ -83,8 +83,8 @@ func TestProcessInput3(t *testing.T) {
         sr := strings.NewReader(s)
 	br := bufio.NewReaderSize(sr, 19)
 	expected := map[string]int{}
-	processInput(*br, 0)
-	actual := phrases[0]
+	processInput(*br, 2)
+	actual := phrases[2]
 	eq := reflect.DeepEqual(actual, expected)
 	if  eq {
 		t.Errorf("expected: %v \nactual = %v \n", actual, expected)
@@ -100,8 +100,8 @@ func TestProcessInput4(t *testing.T) {
         sr := strings.NewReader(s)
 	br := bufio.NewReaderSize(sr, 19)
 	expected := map[string]int{"aaa bbb ccc" : 1}
-	processInput(*br, 0)
-	actual := phrases[0]
+	processInput(*br, 3)
+	actual := phrases[3]
 	eq := reflect.DeepEqual(actual, expected)
 	if  eq {
 		t.Errorf("expected: %v \nactual = %v \n", actual, expected)
@@ -117,8 +117,8 @@ func TestProcessInputUnicode(t *testing.T) {
         sr := strings.NewReader(s)
 	br := bufio.NewReaderSize(sr, 19)
 	expected := map[string]int{"อยาลางผลาญฤๅเขนฆาบฑาใคร ไมถอโทษโกรธแชงซดฮดฮดดา หดอภยเหมอนกฬาอชฌาสย" : 1}
-	processInput(*br, 0)
-	actual := phrases[0]
+	processInput(*br, 4)
+	actual := phrases[4]
 	eq := reflect.DeepEqual(actual, expected)
 	if  eq {
 		t.Errorf("expected: %v \nactual = %v \n", actual, expected)
