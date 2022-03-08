@@ -80,7 +80,6 @@ func processInput(r bufio.Reader) {
 			if unicode.IsPunct(c) || unicode.IsSpace(c) { //
 				if len(word) != 0 { // no onfinished word
 					if unicode.IsPunct(c) || (unicode.IsSpace(c) && tmpPunctAdd) {
-						//fmt.Printf("word = %q \n", string(word))
 						if !tmpPunctAdd { // 1st punct char
 							word = append(word, c)
 							tmpPunctAdd = true
@@ -88,15 +87,12 @@ func processInput(r bufio.Reader) {
 						} else { // 2nd punct char in a row,
 							word = word[:len(word)-1] // delete previous punct/space
 						}
-						//fmt.Printf("word = %q \n", string(word))
 					}
 					phrase[pi] = word
 					if pi < 2 {
 						pi++
 					} else { // phrase completed
-						//fmt.Printf("phrase = %q\n", phraseToStr(phrase))
 						updatePhrases(phraseToStr(phrase))
-						//fmt.Printf("phrases = %v\n", phrases)
 						phrase[0] = phrase[1]
 						phrase[1] = phrase[2]
 					}
@@ -110,7 +106,6 @@ func processInput(r bufio.Reader) {
 			}
 		}
 	}
-	//fmt.Printf("phrases = %v\n", len(phrases))
 
 	return
 }
