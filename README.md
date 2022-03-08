@@ -5,26 +5,26 @@
 - from sources: 
 
 ```
-$ go run parse-conc.go  path/to/file1 /path/to/file2
+$ go run parse.go  path/to/file1 /path/to/file2
 ```
   or 
 ```
-$ cat path/to/file | go run parse-conc.go
+$ cat path/to/file | go run parse.go
 ```
 
 - binary 
 ```
-$ ./parse-conc-{{ arch }}  path/to/file1 /path/to/file2
+$ ./parse-{{ arch }}  path/to/file1 /path/to/file2
 ```
   or
 ```
-$ cat path/to/file parse-conc-{{ arch }}
+$ cat path/to/file parse-{{ arch }}
 ```
 
  {{ arch }} - 'amd64-linux' and 'arm64' (Mac M1)
 
  amd64-linux binary was compiled on arm64 system  with Go cross-compiling option:
- $ OOS=linux GOARCH=amd64 go build -o parse-conc-amd64-linux parse-conc.go
+ $ OOS=linux GOARCH=amd64 go build -o parse-amd64-linux parse.go
  
 
 
@@ -53,10 +53,10 @@ $ docker run  phrase_counter "/phrase_counter/samples/file1.txt" "/phrase_counte
 ## Performance
 
 2 algorithms were considered:
-- consequent:  \_parse.go - datasources processed consequently
+- consequent: parse.go - datasources processed consequently
 - concurent: parse-conc.go  - datasources processed concurently, then results merged
 
-On small amounts of data both algorithms give similar performance, but with data amount growing (10 Moby Dicks :)), concurent option gives betetr performance.
+Serial algorithm is more efficient on large volumes ( ~1000 Moby Dicks). Intermediate results merging takes more than a half of total run time.
 
 
 ## TODO (what to improve)
