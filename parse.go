@@ -8,14 +8,11 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"sync"
 	"unicode"
 )
 
 // main "phrase: number" map
-type M map[string]int
-
-var phrases []M
+var phrases = map[string]int{}
 
 // map sort-by-value
 type Pair struct {
@@ -31,7 +28,6 @@ func (p Pairs) Less(i, j int) bool { return p[i].Value > p[j].Value }
 
 // END of map sort-by-value
 
-// sort and print out top 100
 func sortByValue(phrases map[string]int) {
 	m := len(phrases)
 	p := make(Pairs, m)
@@ -50,7 +46,6 @@ func sortByValue(phrases map[string]int) {
 	}
 }
 
-// converts phrase to string
 func phraseToStr(phr [3][]rune) string {
 	words := []string{}
 	for i := 0; i <= 2; i++ {
@@ -59,20 +54,16 @@ func phraseToStr(phr [3][]rune) string {
 	return strings.Join(words, " ")
 }
 
-// inserts new element or increments existing one
-func updatePhrases(phr string, a int) {
-	if _, ok := phrases[a][phr]; ok {
-		phrases[a][phr]++
+func updatePhrases(phr string) {
+	if _, ok := phrases[phr]; ok {
+		phrases[phr]++
 	} else {
-		phrases[a][phr] = 1
+		phrases[phr] = 1
 	}
 
 }
 
-//main data processor
-// r - data
-// a - index to use when storing in phrases
-func processInput(r bufio.Reader, a int) {
+func processInput(r bufio.Reader) {
 	var word []rune
 	var phrase [3][]rune
 	var pi int
@@ -89,6 +80,7 @@ func processInput(r bufio.Reader, a int) {
 			if unicode.IsPunct(c) || unicode.IsSpace(c) { //
 				if len(word) != 0 { // no onfinished word
 					if unicode.IsPunct(c) || (unicode.IsSpace(c) && tmpPunctAdd) {
+						//fmt.Printf("word = %q \n", string(word))
 						if !tmpPunctAdd { // 1st punct char
 							word = append(word, c)
 							tmpPunctAdd = true
@@ -96,12 +88,15 @@ func processInput(r bufio.Reader, a int) {
 						} else { // 2nd punct char in a row,
 							word = word[:len(word)-1] // delete previous punct/space
 						}
+						//fmt.Printf("word = %q \n", string(word))
 					}
 					phrase[pi] = word
 					if pi < 2 {
 						pi++
 					} else { // phrase completed
-						updatePhrases(phraseToStr(phrase), a)
+						//fmt.Printf("phrase = %q\n", phraseToStr(phrase))
+						updatePhrases(phraseToStr(phrase))
+						//fmt.Printf("phrases = %v\n", phrases)
 						phrase[0] = phrase[1]
 						phrase[1] = phrase[2]
 					}
@@ -115,64 +110,21 @@ func processInput(r bufio.Reader, a int) {
 			}
 		}
 	}
+	//fmt.Printf("phrases = %v\n", len(phrases))
+
 	return
 }
 
-// merges several maps in one
-func mergeMaps(maps []M) map[string]int {
-	lenIdxMap := map[int]int{}
-	lens := make([]int, len(maps))
-	for i := 0; i < len(maps); i++ {
-		lenIdxMap[len(maps[i])] = i
-	}
-	i := 0
-	for k := range lenIdxMap {
-		lens[i] = k
-		i++
-	}
-	// keys now contains sorted array of mapa keys
-	// 1st element  - longest map, we will be merge all others into it
-	sort.Sort(sort.Reverse(sort.IntSlice(lens)))
-
-	i = 1
-	idS := 0
-	idT := lenIdxMap[lens[0]]
-	for {
-		if i >= len(maps) {
-			break
-		}
-		idS = lenIdxMap[lens[i]]
-		i++
-		for ks, vs := range maps[idS] {
-			if vt, ok := maps[idT][ks]; ok {
-				maps[idT][ks] = vt + vs
-			} else {
-				maps[idT][ks] = vs
-			}
-		}
-	}
-	return maps[idT]
-}
-
 func main() {
-	var wg sync.WaitGroup
 	if len(os.Args) == 1 { // stdin
-		phrases = append(phrases, M{})
 		r := bufio.NewReader(os.Stdin)
-		processInput(*r, 0)
+		processInput(*r)
 	} else {
-		wg.Add(len(os.Args) - 1)
 		for a := 1; a < len(os.Args); a++ {
-			phrases = append(phrases, M{})
-			go func(a int) {
-				defer wg.Done()
-				f, _ := os.Open(os.Args[a])
-				r := bufio.NewReader(f)
-				processInput(*r, a-1)
-			}(a)
+			f, _ := os.Open(os.Args[a])
+			r := bufio.NewReader(f)
+			processInput(*r)
 		}
-		wg.Wait()
 	}
-	phrasesJoined := mergeMaps(phrases)
-	sortByValue(phrasesJoined)
+	sortByValue(phrases)
 }
